@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 
 function QuestionForm(props) {
+  const API_URL='http://localhost:4000/questions'
+
   const [formData, setFormData] = useState({
     prompt: "",
     answer1: "",
@@ -10,16 +13,35 @@ function QuestionForm(props) {
     correctIndex: 0,
   });
 
+
+
   function handleChange(event) {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
+    console.log(formData)
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(formData);
+    const {prompt, answer1, answer2, answer3, answer4, correctIndex} = formData
+    // event.target.reset()
+
+    fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        prompt: prompt,
+        answers: [answer1, answer2, answer3, answer4],
+        correctIndex: correctIndex
+      })
+    })
+    .then(res => console.log(res))
+
   }
 
   return (
